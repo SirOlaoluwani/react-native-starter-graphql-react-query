@@ -13,9 +13,9 @@ export const ApiErrorResource = (error: AxiosError) => {
   });
 };
 
-export const apiResource = () => {
+const apiResource = () => {
   const client = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_GIFT_UP_API_URL,
+    baseURL: process.env.API_URL,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -34,3 +34,5 @@ export const apiResource = () => {
 
   return client;
 };
+
+export default apiResource;
