@@ -10,12 +10,13 @@ import {
 import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
 import Config from "EbanqoCustomerServiceApp/config.env";
+import * as Device from "expo-device";
 
 const httpLink = new HttpLink({
   uri: Config.API_GATEWAY,
   headers: {
     device: Platform.OS,
-    version: DeviceInfo.getVersion(),
+    version: Device.osVersion,
   },
 });
 
