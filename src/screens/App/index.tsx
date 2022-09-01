@@ -35,22 +35,9 @@ import {REACT_APP_BASE_URL} from '@env';
 import apiResource from 'src/services/api';
 import {useEffect} from 'react';
 
-const environment = process.env.NODE_ENV;
-console.log(environment);
 console.log('REACT_APP_BASE_URL', REACT_APP_BASE_URL);
 
 const App = () => {
-  const fetchData = async () => {
-    try {
-      const reasponse = await apiResource().get(REACT_APP_BASE_URL);
-      console.log('response', reasponse);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
