@@ -78,7 +78,7 @@ export default class ErrorBoundary extends React.Component {
                 color: '#011E33',
               },
             ]}>
-            If this crash persists please contact the eBanqo support. Thanks
+            If this crash persists please contact support. Thanks
           </Text>
         </View>
       );
