@@ -1,4 +1,7 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
+
+//Environment Variables
+import {REACT_APP_BASE_URL} from '@env';
 
 export const ApiErrorResource = (error: AxiosError) => {
   const errorData = error?.response?.data as Record<string, string | object>;
@@ -15,10 +18,10 @@ export const ApiErrorResource = (error: AxiosError) => {
 
 const apiResource = () => {
   const client = axios.create({
-    baseURL: process.env.API_URL,
+    baseURL: REACT_APP_BASE_URL,
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
   });
 
@@ -27,7 +30,7 @@ const apiResource = () => {
    */
   client.interceptors.response.use((response: AxiosResponse) => {
     if (![200, 201].includes(response?.status)) {
-      Promise.reject(response?.data?.message ?? "");
+      Promise.reject(response?.data?.message ?? '');
     }
     return Promise.resolve(response?.data);
   }, ApiErrorResource);

@@ -1,4 +1,4 @@
-import { Alert, Platform } from "react-native";
+import {Alert, Platform} from 'react-native';
 // third-party libraries
 import {
   ApolloClient,
@@ -6,17 +6,19 @@ import {
   ApolloLink,
   InMemoryCache,
   concat,
-} from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
-import { RetryLink } from "@apollo/client/link/retry";
-import Config from "EbanqoCustomerServiceApp/config.env";
-import * as Device from "expo-device";
+} from '@apollo/client';
+import {onError} from '@apollo/client/link/error';
+import {RetryLink} from '@apollo/client/link/retry';
+import DeviceInfo from 'react-native-device-info';
+
+//Environment Variables
+import {REACT_APP_GRAPHQL_GATEWAY} from '@env';
 
 const httpLink = new HttpLink({
-  uri: Config.API_GATEWAY,
+  uri: REACT_APP_GRAPHQL_GATEWAY,
   headers: {
     device: Platform.OS,
-    version: Device.osVersion,
+    version: DeviceInfo.getVersion(),
   },
 });
 
@@ -40,24 +42,24 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 const showGraphQLError = (description: string) => {
-  Alert.alert("Ooops...", description);
+  Alert.alert('Ooops...', description);
 };
 
 const showNetworkError = (description: string) => {
-  Alert.alert("Ooops...", `${description}. Please try again!`);
+  Alert.alert('Ooops...', `${description}. Please try again!`);
 };
 
 const authLink = concat(authMiddleware, httpLink);
 
 const errorLink = onError(
-  ({ graphQLErrors, networkError, operation, forward }) => {
+  ({graphQLErrors, networkError, operation, forward}) => {
     if (graphQLErrors && graphQLErrors.length) {
       /**
        * Loop throught the graphql error and handle error cases
        */
-      graphQLErrors.forEach(async ({ message, extensions, ...errorParams }) => {
+      graphQLErrors.forEach(async ({message, extensions, ...errorParams}) => {
         switch (extensions?.code) {
-          case "FORBIDDEN":
+          case 'FORBIDDEN':
             // old token has expired throwing AuthenticationError,
             // one way to handle is to obtain a new token and
             // add it to the operation context
@@ -76,7 +78,7 @@ const errorLink = onError(
             // failed request, and retries it with a new token
             return forward(operation);
 
-          case "GRAPHQL_VALIDATION_FAILED":
+          case 'GRAPHQL_VALIDATION_FAILED':
             return forward(operation);
           default:
             showGraphQLError(message);
@@ -88,7 +90,7 @@ const errorLink = onError(
     if (networkError) {
       showNetworkError(networkError.message);
     }
-  }
+  },
 );
 
 const link = ApolloLink.from([errorLink, authLink, retryLink]);
@@ -103,7 +105,7 @@ const client = new ApolloClient({
     },
   }),
   link,
-  defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
+  defaultOptions: {watchQuery: {fetchPolicy: 'cache-and-network'}},
 });
 
 export default client;
